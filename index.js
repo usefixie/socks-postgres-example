@@ -61,11 +61,11 @@ function requestHandler(req, res) {
   }
   pgConnect(config, (err, client) => {
     if (err) return handleError(err, res);
-    client.query('SELECT 1+1 as test_sum_pg', function (err, result) {
+    client.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = \'public\'', function (err, result) {
       if (err) return handleError(err, res);
       client.end(function (err) {
         if (err) return handleError(err, res);
-        res.send(result.rows[0]);
+        res.send('Got tables: ' + result.rows.map(row => row.tablename).join(', '));
       });
     });
   });
